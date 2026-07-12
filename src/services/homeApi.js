@@ -18,19 +18,25 @@ export async function getHomeData() {
       .from("homepage_stats")
       .select("*")
       .eq("is_active", true)
-      .order("sort_order"),
+      .order("sort_order", {
+        ascending: true,
+      }),
 
     supabase
       .from("timeline")
       .select("*")
       .eq("is_active", true)
-      .order("sort_order"),
+      .order("sort_order", {
+        ascending: true,
+      }),
 
     supabase
       .from("faq")
       .select("*")
       .eq("is_active", true)
-      .order("sort_order"),
+      .order("sort_order", {
+        ascending: true,
+      }),
 
     supabase
       .from("settings")
@@ -47,17 +53,17 @@ export async function getHomeData() {
 
   settingsResult.data.forEach((item) => {
 
-    settings[item.key] = item.value;
+    settings[item.setting_key] = item.setting_value;
 
   });
 
   return {
 
-    stats: statsResult.data,
+    stats: statsResult.data ?? [],
 
-    timeline: timelineResult.data,
+    timeline: timelineResult.data ?? [],
 
-    faq: faqResult.data,
+    faq: faqResult.data ?? [],
 
     settings,
 

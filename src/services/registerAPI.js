@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 function generateRegistrationNumber() {
+
   const now = new Date();
 
   const year = now.getFullYear();
@@ -10,51 +11,13 @@ function generateRegistrationNumber() {
   );
 
   return `PMRSMANEL-${year}-${random}`;
+
 }
 
 export async function registerApplicant(formData) {
 
   const registrationNumber =
     generateRegistrationNumber();
-
-  let photoUrl = "";
-
-  // ============================
-  // Upload Foto
-  // ============================
-
-  if (formData.foto) {
-
-    const ext =
-      formData.foto.name.split(".").pop();
-
-    const fileName =
-      `${registrationNumber}.${ext}`;
-
-    const { error: uploadError } =
-      await supabase.storage
-        .from("photos")
-        .upload(fileName, formData.foto, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-    if (uploadError)
-      throw uploadError;
-
-    const { data } =
-      supabase.storage
-        .from("photos")
-        .getPublicUrl(fileName);
-
-    photoUrl =
-      data.publicUrl;
-
-  }
-
-  // ============================
-  // Simpan Database
-  // ============================
 
   const payload = {
 
@@ -109,8 +72,8 @@ export async function registerApplicant(formData) {
     parent_phone:
       formData.noHpOrtu,
 
-    photo_url:
-      photoUrl,
+    // Upload foto dinonaktifkan sementara
+    photo_url: null,
 
     status:
       "Menunggu Verifikasi",
@@ -124,8 +87,11 @@ export async function registerApplicant(formData) {
   };
 
   const {
+
     data,
+
     error,
+
   } = await supabase
 
     .from("applicants")
@@ -136,8 +102,13 @@ export async function registerApplicant(formData) {
 
     .single();
 
-  if (error)
+  if (error) {
+
+    console.error(error);
+
     throw error;
+
+  }
 
   return {
 

@@ -88,7 +88,7 @@ function Timeline({
 
         <div className="mt-14 rounded-[32px] bg-gradient-to-r from-red-50 to-red-100 p-8 shadow-lg">
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
 
             {
 

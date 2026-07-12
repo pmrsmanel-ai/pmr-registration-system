@@ -46,19 +46,11 @@ function Hero({
 
             </div>
 
-            <h1 className="mt-8 text-5xl font-black leading-tight text-gray-900 lg:text-7xl">
+            <h1 className="mt-8 whitespace-pre-line text-5xl font-black leading-tight text-gray-900 lg:text-7xl">
+  {settings.hero_title || "Jadilah Generasi Peduli, Sigap & Berkarakter"}
+</h1>
 
-              {
-
-                settings.hero_title ||
-
-                "Jadilah Generasi Peduli, Sigap & Berkarakter"
-
-              }
-
-            </h1>
-
-            <p className="mt-8 max-w-xl text-lg leading-9 text-gray-600">
+            <p className="mt-8 max-w-xl whitespace-pre-line text-lg leading-9 text-gray-600">
 
               {
 
@@ -124,7 +116,7 @@ function Hero({
 
               {
 
-                settings.registration_status === "OPEN"
+                (settings.registration_status || "").toUpperCase() === "OPEN"
 
                   ? (
 
