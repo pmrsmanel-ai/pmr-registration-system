@@ -74,13 +74,8 @@ function HeroImage({
 
       <img
 
-        src={
+        src={`${import.meta.env.BASE_URL}images/hero.png`}
 
-          settings?.hero_image ||
-
-          "/images/hero.png"
-
-        }
 
         alt="PMR SMAN 1 AIKMEL"
 

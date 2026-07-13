@@ -11,7 +11,7 @@ const RegistrationCard = forwardRef(({ data }, ref) => {
       <div className="bg-gradient-to-r from-red-700 to-red-600 px-12 py-10 text-center text-white">
 
         <img
-          src="/images/logo-pmr.png"
+          src={`${import.meta.env.BASE_URL}images/logo-pmr.png`}
           alt="PMR"
           className="mx-auto h-28 w-28 object-contain"
         />
@@ -38,7 +38,7 @@ const RegistrationCard = forwardRef(({ data }, ref) => {
           <img
             src={
               data.photoUrl ||
-              "/images/avatar-placeholder.png"
+              `${import.meta.env.BASE_URL}images/avatar-placeholder.png`
             }
             alt="Foto Peserta"
             className="h-52 w-52 rounded-3xl border-4 border-red-100 object-cover"

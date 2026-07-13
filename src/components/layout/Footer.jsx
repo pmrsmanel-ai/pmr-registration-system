@@ -30,7 +30,7 @@ function Footer() {
 <div className="flex items-center justify-center md:justify-start">
 
               <img
-                src="/images/logo-pmr.png"
+                src={`${import.meta.env.BASE_URL}images/logo-pmr.png`}
                 alt="Logo PMR SMANEL"
                 className="h-36 w-36 object-contain"
               />

@@ -64,7 +64,7 @@ function Login() {
 
         <img
 
-          src="/images/logo-pmr.png"
+          src={`${import.meta.env.BASE_URL}images/logo-pmr.png`}
 
           alt="PMR"
 

@@ -53,7 +53,7 @@ function Sidebar({
 
         <img
 
-          src="/images/logo-pmr.png"
+          src={`${import.meta.env.BASE_URL}images/logo-pmr.png`}
 
           className="mx-auto h-24"
 

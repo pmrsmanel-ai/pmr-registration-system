@@ -130,7 +130,7 @@ function ApplicantModal({
               <img
                 src={
                   applicant.photo_url ||
-                  "/images/avatar-placeholder.png"
+                  `${import.meta.env.BASE_URL}images/avatar-placeholder.png`
                 }
                 alt={applicant.full_name}
                 className="h-[420px] w-full object-cover"

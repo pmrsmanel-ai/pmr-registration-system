@@ -23,7 +23,7 @@ function About() {
             <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-red-100"></div>
 
             <img
-              src="/images/about-pmr.jpg"
+              src={`${import.meta.env.BASE_URL}images/about-pmr.jpg`}
               alt="PMR SMANEL"
               className="relative rounded-[32px] shadow-2xl"
             />

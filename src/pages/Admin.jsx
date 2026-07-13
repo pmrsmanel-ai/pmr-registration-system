@@ -713,7 +713,7 @@ function EmptyState() {
 
       <img
 
-        src="/images/empty-data.svg"
+        src={`${import.meta.env.BASE_URL}images/empty-data.svg`}
 
         alt="Empty"
 
