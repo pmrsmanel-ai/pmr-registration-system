@@ -1,7 +1,4 @@
-import {
-  Routes,
-  Route,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -36,20 +33,16 @@ function App() {
         element={<Login />}
       />
 
-<Route
+      <Route
+        path="/hasil"
+        element={<CheckResult />}
+      />
 
-  path="/hasil"
-
-  element={<CheckResult />}
-
-/>
       <Route
         path="/admin"
         element={
           <ProtectedRoute>
-
             <Admin />
-
           </ProtectedRoute>
         }
       />

@@ -1,38 +1,36 @@
 {
   "name": "pmr-registration",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "homepage": "https://pmrsmanel-ai.github.io/pmr-registration-system",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.110.2",
-    "axios": "^1.18.1",
-    "file-saver": "^2.0.5",
-    "framer-motion": "^12.42.2",
-    "html-to-image": "^1.11.13",
-    "lucide-react": "^1.23.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-hook-form": "^7.81.0",
-    "react-hot-toast": "^2.6.0",
-    "react-icons": "^5.7.0",
-    "react-qr-code": "^2.2.0",
-    "react-router-dom": "^7.18.1",
-    "xlsx": "^0.18.5"
+    "@supabase/supabase-js": "^2.57.0",
+    "lucide-react": "^0.542.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.8.2"
   },
   "devDependencies": {
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
-    "autoprefixer": "^10.5.2",
-    "oxlint": "^1.71.0",
-    "postcss": "^8.5.16",
+    "@eslint/js": "^9.34.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.34.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "gh-pages": "^6.3.0",
+    "globals": "^16.3.0",
+    "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "vite": "^8.1.1"
+    "vite": "^7.1.3"
   }
 }
