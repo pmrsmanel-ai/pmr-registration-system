@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
 
-import HomepageStatsModal from "./HomepageStatsModal";
+import HomepageStatsModal from "./modals/HomepageStatsModal";
 
 import { getHomepageStats } from "../../services/homepageApi";
 

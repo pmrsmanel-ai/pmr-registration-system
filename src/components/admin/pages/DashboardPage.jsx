@@ -1,13 +1,8 @@
 import {
-
   Users,
-
   Clock3,
-
   CheckCircle2,
-
-  CircleX,
-
+  XCircle,
 } from "lucide-react";
 
 function DashboardPage({
@@ -24,13 +19,13 @@ function DashboardPage({
 
         <h1 className="text-4xl font-black">
 
-          Dashboard
+          Dashboard Admin
 
         </h1>
 
         <p className="mt-2 text-gray-500">
 
-          Selamat datang di Dashboard PMR SMAN 1 AIKMEL
+          Portal PMR SMAN 1 AIKMEL
 
         </p>
 
@@ -38,9 +33,7 @@ function DashboardPage({
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
-        <Card
-
-          icon={<Users size={32}/>}
+        <DashboardCard
 
           title="Total Pendaftar"
 
@@ -48,11 +41,11 @@ function DashboardPage({
 
           color="bg-red-600"
 
+          icon={<Users size={34}/>}
+
         />
 
-        <Card
-
-          icon={<Clock3 size={32}/>}
+        <DashboardCard
 
           title="Menunggu"
 
@@ -60,11 +53,11 @@ function DashboardPage({
 
           color="bg-yellow-500"
 
+          icon={<Clock3 size={34}/>}
+
         />
 
-        <Card
-
-          icon={<CheckCircle2 size={32}/>}
+        <DashboardCard
 
           title="Diterima"
 
@@ -72,17 +65,19 @@ function DashboardPage({
 
           color="bg-green-600"
 
+          icon={<CheckCircle2 size={34}/>}
+
         />
 
-        <Card
-
-          icon={<CircleX size={32}/>}
+        <DashboardCard
 
           title="Ditolak"
 
           value={stats.rejected}
 
           color="bg-gray-700"
+
+          icon={<XCircle size={34}/>}
 
         />
 
@@ -94,9 +89,7 @@ function DashboardPage({
 
 }
 
-function Card({
-
-  icon,
+function DashboardCard({
 
   title,
 
@@ -104,13 +97,15 @@ function Card({
 
   color,
 
-}){
+  icon,
 
-  return(
+}) {
+
+  return (
 
     <div
 
-      className={`${color} rounded-3xl p-6 text-white shadow-xl`}
+      className={`${color} rounded-3xl p-7 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl`}
 
     >
 
@@ -132,7 +127,11 @@ function Card({
 
         </div>
 
-        {icon}
+        <div className="rounded-2xl bg-white/20 p-4">
+
+          {icon}
+
+        </div>
 
       </div>
 

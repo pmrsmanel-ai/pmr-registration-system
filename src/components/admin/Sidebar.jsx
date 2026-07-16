@@ -9,6 +9,7 @@ import {
   Calendar,
   CircleHelp,
   Users,
+  GraduationCap,
   FileSpreadsheet,
   Settings,
   LogOut,
@@ -24,30 +25,31 @@ function Sidebar({
 
 }) {
 
-  const [websiteOpen,setWebsiteOpen]=
+  const [websiteOpen, setWebsiteOpen] =
     useState(true);
 
-  const [registrationOpen,setRegistrationOpen]=
+  const [registrationOpen, setRegistrationOpen] =
     useState(true);
 
-  async function logout(){
+  async function logout() {
 
-    const ok=
-      window.confirm(
-        "Keluar dari Dashboard?"
-      );
+    const ok = window.confirm(
+      "Keluar dari Dashboard?"
+    );
 
-    if(!ok) return;
+    if (!ok) return;
 
     await supabase.auth.signOut();
 
-    window.location.href="/login";
+    window.location.href = "/login";
 
   }
 
-  return(
+  return (
 
     <aside className="flex min-h-screen w-72 flex-col bg-red-700 text-white">
+
+      {/* HEADER */}
 
       <div className="border-b border-red-600 p-8">
 
@@ -57,7 +59,7 @@ function Sidebar({
 
           className="mx-auto h-24"
 
-          alt="Logo"
+          alt="Logo PMR"
 
         />
 
@@ -75,8 +77,9 @@ function Sidebar({
 
       </div>
 
+      {/* MENU */}
+
       <div className="flex-1 overflow-y-auto p-4">
-                {/* Dashboard */}
 
         <MenuButton
 
@@ -86,7 +89,11 @@ function Sidebar({
 
           label="Dashboard"
 
-          onClick={() => setSelected("dashboard")}
+          onClick={() =>
+
+            setSelected("dashboard")
+
+          }
 
         />
 
@@ -96,11 +103,15 @@ function Sidebar({
 
           onClick={() =>
 
-            setWebsiteOpen(!websiteOpen)
+            setWebsiteOpen(
+
+              !websiteOpen
+
+            )
 
           }
 
-          className="mt-4 flex w-full items-center justify-between rounded-2xl px-4 py-3 font-semibold hover:bg-red-600"
+          className="mt-4 flex w-full items-center justify-between rounded-2xl px-4 py-3 font-semibold transition hover:bg-red-600"
 
         >
 
@@ -116,9 +127,13 @@ function Sidebar({
 
             websiteOpen
 
-              ? <ChevronDown size={18}/>
+              ?
 
-              : <ChevronRight size={18}/>
+              <ChevronDown size={18}/>
+
+              :
+
+              <ChevronRight size={18}/>
 
           }
 
@@ -140,11 +155,11 @@ function Sidebar({
 
                 small
 
-                onClick={()=>
+                onClick={()=>{
 
                   setSelected("homepage")
 
-                }
+                }}
 
               />
 
@@ -158,11 +173,11 @@ function Sidebar({
 
                 small
 
-                onClick={()=>
+                onClick={()=>{
 
                   setSelected("timeline")
 
-                }
+                }}
 
               />
 
@@ -176,11 +191,11 @@ function Sidebar({
 
                 small
 
-                onClick={()=>
+                onClick={()=>{
 
                   setSelected("faq")
 
-                }
+                }}
 
               />
 
@@ -190,11 +205,11 @@ function Sidebar({
 
         }
 
-        {/* PENDAFTAR */}
+        {/* PENDAFTARAN */}
 
         <button
 
-          onClick={()=>
+          onClick={()=>{
 
             setRegistrationOpen(
 
@@ -202,9 +217,9 @@ function Sidebar({
 
             )
 
-          }
+          }}
 
-          className="mt-4 flex w-full items-center justify-between rounded-2xl px-4 py-3 font-semibold hover:bg-red-600"
+          className="mt-4 flex w-full items-center justify-between rounded-2xl px-4 py-3 font-semibold transition hover:bg-red-600"
 
         >
 
@@ -220,9 +235,13 @@ function Sidebar({
 
             registrationOpen
 
-              ? <ChevronDown size={18}/>
+              ?
 
-              : <ChevronRight size={18}/>
+              <ChevronDown size={18}/>
+
+              :
+
+              <ChevronRight size={18}/>
 
           }
 
@@ -244,15 +263,32 @@ function Sidebar({
 
                 small
 
-                onClick={()=>
+                onClick={()=>{
 
                   setSelected("applicants")
 
-                }
+                }}
 
               />
 
               <MenuButton
+
+                active={selected==="graduation"}
+
+                icon={<GraduationCap size={18}/>}
+
+                label="Kelulusan"
+
+                small
+
+                onClick={()=>{
+
+                  setSelected("graduation")
+
+                }}
+
+              />
+                            <MenuButton
 
                 active={selected==="export"}
 
@@ -262,11 +298,11 @@ function Sidebar({
 
                 small
 
-                onClick={()=>
+                onClick={()=>{
 
                   setSelected("export")
 
-                }
+                }}
 
               />
 
@@ -275,23 +311,24 @@ function Sidebar({
           )
 
         }
-                {/* PENGATURAN */}
+
+        {/* PENGATURAN */}
 
         <div className="mt-4">
 
           <MenuButton
 
-            active={selected === "settings"}
+            active={selected==="settings"}
 
-            icon={<Settings size={20} />}
+            icon={<Settings size={20}/>}
 
             label="Pengaturan"
 
-            onClick={() =>
+            onClick={()=>{
 
               setSelected("settings")
 
-            }
+            }}
 
           />
 
@@ -311,7 +348,7 @@ function Sidebar({
 
         >
 
-          <LogOut size={20} />
+          <LogOut size={20}/>
 
           Keluar
 
@@ -400,4 +437,5 @@ function MenuButton({
   );
 
 }
+
 export default Sidebar;

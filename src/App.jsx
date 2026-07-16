@@ -6,6 +6,8 @@ import Success from "./pages/Success";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import CheckResult from "./pages/CheckResult";
+import GraduationLogin from "./pages/GraduationLogin";
+import GraduationResult from "./pages/GraduationResult";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -36,6 +38,16 @@ function App() {
       <Route
         path="/hasil"
         element={<CheckResult />}
+      />
+
+      <Route
+        path="/graduation"
+        element={<GraduationLogin />}
+      />
+
+      <Route
+        path="/graduation/result"
+        element={<GraduationResult />}
       />
 
       <Route

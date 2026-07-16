@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
+
 import Container from "../layout/Container";
+import { getFaq } from "../../services/faqApi";
 
 function Item({
 
@@ -14,7 +16,7 @@ function Item({
 
   return (
 
-    <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
 
       <button
 
@@ -64,11 +66,15 @@ function Item({
 
         <div className="overflow-hidden">
 
-          <p className="px-8 pb-8 leading-8 text-gray-600">
+          <div className="border-t border-gray-100 px-8 pb-8 pt-6">
 
-            {item.answer}
+            <p className="leading-8 text-gray-600 whitespace-pre-line">
 
-          </p>
+              {item.answer}
+
+            </p>
+
+          </div>
 
         </div>
 
@@ -80,13 +86,66 @@ function Item({
 
 }
 
-function Faq({
+function Faq() {
 
-  faq = [],
+  const [faq, setFaq] =
+    useState([]);
 
-}) {
+  const [loading, setLoading] =
+    useState(true);
 
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] =
+    useState(0);
+
+  async function loadFaq() {
+
+    try {
+
+      setLoading(true);
+
+      const data =
+        await getFaq();
+
+      const activeFaq =
+        data
+
+          .filter(
+
+            item => item.is_active
+
+          )
+
+          .sort(
+
+            (a,b)=>
+
+              a.sort_order - b.sort_order
+
+          );
+
+      setFaq(activeFaq);
+
+    }
+
+    catch(err){
+
+      console.error(err);
+
+    }
+
+    finally{
+
+      setLoading(false);
+
+    }
+
+  }
+
+  useEffect(()=>{
+
+    loadFaq();
+
+  },[]);
 
   return (
 
@@ -99,6 +158,8 @@ function Faq({
     >
 
       <Container>
+
+        {/* HEADER */}
 
         <div className="mx-auto max-w-3xl text-center">
 
@@ -128,21 +189,47 @@ function Faq({
 
         </div>
 
+        {/* CONTENT */}
+
         <div className="mx-auto mt-16 max-w-4xl space-y-5">
 
           {
 
-            faq.length === 0 ? (
+            loading ? (
 
-              <div className="rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center text-gray-500">
+              <div className="rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
 
-                Belum ada FAQ.
+                <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-red-200 border-t-red-700"></div>
+
+                <p className="mt-5 text-gray-500">
+
+                  Memuat FAQ...
+
+                </p>
+
+              </div>
+
+            ) : faq.length === 0 ? (
+
+              <div className="rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
+
+                <h3 className="text-xl font-bold">
+
+                  Belum Ada FAQ
+
+                </h3>
+
+                <p className="mt-3 text-gray-500">
+
+                  Admin belum menambahkan FAQ.
+
+                </p>
 
               </div>
 
             ) : (
 
-              faq.map((item, index) => (
+              faq.map((item,index)=>(
 
                 <Item
 
@@ -150,21 +237,25 @@ function Faq({
 
                   item={item}
 
-                  active={open === index}
+                  active={
 
-                  onClick={() =>
+                    open===index
+
+                  }
+
+                  onClick={()=>{
 
                     setOpen(
 
-                      open === index
+                      open===index
 
                         ? -1
 
                         : index
 
-                    )
+                    );
 
-                  }
+                  }}
 
                 />
 

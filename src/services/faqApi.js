@@ -59,6 +59,10 @@ export async function createFaq(payload) {
 
       ...payload,
 
+      created_at: new Date().toISOString(),
+
+      updated_at: new Date().toISOString(),
+
     })
 
     .select()
@@ -123,5 +127,38 @@ export async function deleteFaq(id) {
   if (error) throw error;
 
   return true;
+
+}
+
+/* ===========================
+   TOGGLE FAQ
+=========================== */
+
+export async function toggleFaq(
+  id,
+  is_active,
+) {
+
+  const { data, error } = await supabase
+
+    .from("faq")
+
+    .update({
+
+      is_active,
+
+      updated_at: new Date().toISOString(),
+
+    })
+
+    .eq("id", id)
+
+    .select()
+
+    .single();
+
+  if (error) throw error;
+
+  return data;
 
 }

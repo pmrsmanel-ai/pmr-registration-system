@@ -127,3 +127,72 @@ export async function deleteHomepageStat(id) {
   return true;
 
 }
+
+/* ===========================
+   GET HOMEPAGE SETTINGS
+=========================== */
+
+export async function getHomepageSettings() {
+
+  const { data, error } = await supabase
+
+    .from("settings")
+
+    .select("*");
+
+  if (error) throw error;
+
+  const settings = {};
+
+  data.forEach((item) => {
+
+    settings[item.setting_key] =
+      item.setting_value;
+
+  });
+
+  return settings;
+
+}
+
+/* ===========================
+   UPDATE HOMEPAGE SETTINGS
+=========================== */
+
+export async function updateHomepageSettings(payload) {
+
+  const updates = Object.entries(payload).map(
+
+    ([setting_key, setting_value]) => ({
+
+      setting_key,
+
+      setting_value,
+
+      updated_at: new Date().toISOString(),
+
+    })
+
+  );
+
+  const { error } = await supabase
+
+    .from("settings")
+
+    .upsert(
+
+      updates,
+
+      {
+
+        onConflict: "setting_key",
+
+      }
+
+    );
+
+  if (error) throw error;
+
+  return true;
+
+}

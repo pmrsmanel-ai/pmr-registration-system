@@ -8,7 +8,7 @@ import {
 import {
   createFaq,
   updateFaq,
-} from "../../services/faqApi";
+} from "../../../services/faqApi";
 
 function FaqModal({
 

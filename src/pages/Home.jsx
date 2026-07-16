@@ -9,6 +9,7 @@ import Timeline from "../components/home/Timeline";
 import Requirements from "../components/home/Requirements";
 import Faq from "../components/home/Faq";
 import Cta from "../components/home/Cta";
+import GraduationBanner from "../components/home/GraduationBanner";
 
 import { getHomeData } from "../services/homeApi";
 
@@ -93,37 +94,43 @@ function Home() {
 
 />
 
-      <About
+<About
 
-        settings={homeData.settings}
+  settings={homeData.settings}
 
-      />
+/>
 
-      <WhyJoin
+<WhyJoin
 
-        stats={homeData.stats}
+  stats={homeData.stats}
 
-      />
+/>
 
-      <Timeline
+<Timeline
 
-        timeline={homeData.timeline}
+  timeline={homeData.timeline}
 
-      />
+/>
 
-      <Requirements />
+<GraduationBanner
 
-      <Faq
+  settings={homeData.settings}
 
-        faq={homeData.faq}
+/>
 
-      />
+<Requirements />
 
-      <Cta
+<Faq
 
-        settings={homeData.settings}
+  faq={homeData.faq}
 
-      />
+/>
+
+<Cta
+
+  settings={homeData.settings}
+
+/>
 
     </Layout>
 
