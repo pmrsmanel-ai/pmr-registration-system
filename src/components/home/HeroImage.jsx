@@ -74,14 +74,24 @@ function HeroImage({
 
       <img
 
-        src={`${import.meta.env.BASE_URL}images/hero.png`}
+  src={
+    settings.hero_image
+      ? settings.hero_image
+      : `${import.meta.env.BASE_URL}images/hero.png`
+  }
 
+  alt="PMR SMAN 1 AIKMEL"
 
-        alt="PMR SMAN 1 AIKMEL"
+  className="relative z-10 w-full max-w-[560px] object-contain drop-shadow-2xl"
 
-        className="relative z-10 w-full max-w-[560px] object-contain drop-shadow-2xl"
+  onError={(e) => {
 
-      />
+    e.currentTarget.src =
+      `${import.meta.env.BASE_URL}images/hero.png`;
+
+  }}
+
+/>
 
     </div>
 

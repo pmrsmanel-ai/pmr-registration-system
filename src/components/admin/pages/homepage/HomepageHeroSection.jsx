@@ -1,120 +1,196 @@
-import { Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Pencil, ShieldCheck } from "lucide-react";
+
+import {
+  getHomepageSettings,
+} from "../../../../services/homepageApi";
+
+import HeroModal from "../../modals/HeroModal";
 
 function HomepageHeroSection() {
 
+  const [loading, setLoading] =
+    useState(true);
+
+  const [settings, setSettings] =
+    useState({});
+
+  const [openModal, setOpenModal] =
+    useState(false);
+
+  async function loadData() {
+
+    try {
+
+      setLoading(true);
+
+      const data =
+        await getHomepageSettings();
+
+      setSettings(data);
+
+    }
+
+    catch (err) {
+
+      console.error(err);
+
+      alert(err.message);
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
+  useEffect(() => {
+
+    loadData();
+
+  }, []);
+
+  if (loading) {
+
+    return (
+
+      <section className="rounded-3xl bg-white p-8 shadow">
+
+        Memuat Hero...
+
+      </section>
+
+    );
+
+  }
+
   return (
 
-    <section className="rounded-3xl bg-white p-8 shadow">
+    <>
 
-      <div className="flex items-center justify-between">
+      <section className="rounded-3xl bg-white p-8 shadow">
 
-        <div>
+        <div className="flex items-center justify-between">
 
-          <h2 className="text-2xl font-black">
+          <div>
 
-            Hero Section
+            <h2 className="text-2xl font-black">
 
-          </h2>
+              Hero Section
 
-          <p className="mt-2 text-gray-500">
+            </h2>
 
-            Kelola tampilan Hero yang muncul pertama kali pada Homepage.
+            <p className="mt-2 text-gray-500">
 
-          </p>
+              Kelola tampilan Hero Homepage.
+
+            </p>
+
+          </div>
+
+          <button
+
+            onClick={() =>
+
+              setOpenModal(true)
+
+            }
+
+            className="flex items-center gap-2 rounded-2xl bg-red-700 px-6 py-3 font-semibold text-white hover:bg-red-800"
+
+          >
+
+            <Pencil size={18} />
+
+            Edit Hero
+
+          </button>
+
+        </div>
+                <div className="mt-10 grid gap-6 lg:grid-cols-2">
+
+          {/* Preview Kiri */}
+
+          <div className="space-y-5">
+
+            <PreviewItem
+              label="Hero Badge"
+              value={settings.hero_badge}
+            />
+
+            <PreviewItem
+              label="Hero Title"
+              value={settings.hero_title}
+            />
+
+            <PreviewItem
+              label="Hero Subtitle"
+              value={settings.hero_subtitle}
+            />
+
+            <PreviewItem
+              label="Button Utama"
+              value={settings.hero_button_text}
+            />
+
+          </div>
+
+          {/* Preview Kanan */}
+
+          <div className="space-y-5">
+
+            <PreviewItem
+              label="Button Link"
+              value={settings.hero_button_link}
+            />
+
+            <PreviewItem
+              label="Learn More Link"
+              value={settings.learn_more_link}
+            />
+
+            <PreviewItem
+              label="Status Pendaftaran"
+              value={settings.registration_status}
+            />
+
+            <PreviewItem
+              label="Hero Image"
+              value={settings.hero_image}
+            />
+
+          </div>
 
         </div>
 
-        <button
+      </section>
 
-          className="flex items-center gap-3 rounded-2xl bg-red-700 px-6 py-4 font-bold text-white transition hover:bg-red-800"
+      {
 
-        >
+        openModal && (
 
-          <Pencil size={18} />
+          <HeroModal
 
-          Edit Hero
+            settings={settings}
 
-        </button>
+            onClose={async () => {
 
-      </div>
+              setOpenModal(false);
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+              await loadData();
 
-        <div className="space-y-4">
-
-          <PreviewItem
-
-            label="Badge"
-
-            value="Pendaftaran PMR Tahun 2026"
+            }}
 
           />
 
-          <PreviewItem
+        )
 
-            label="Judul"
+      }
 
-            value="Jadilah Generasi Peduli, Sigap & Berkarakter"
-
-          />
-
-          <PreviewItem
-
-            label="Sub Judul"
-
-            value="Bergabung bersama PMR SMAN 1 AIKMEL."
-
-          />
-
-          <PreviewItem
-
-            label="Status"
-
-            value="OPEN"
-
-          />
-
-        </div>
-
-        <div className="space-y-4">
-
-          <PreviewItem
-
-            label="Tombol Utama"
-
-            value="Gabung PMR →"
-
-          />
-
-          <PreviewItem
-
-            label="Link Tombol"
-
-            value="/register"
-
-          />
-
-          <PreviewItem
-
-            label="Tombol Kedua"
-
-            value="Pelajari PMR"
-
-          />
-
-          <PreviewItem
-
-            label="Hero Image"
-
-            value="/images/hero.png"
-
-          />
-
-        </div>
-
-      </div>
-
-    </section>
+    </>
 
   );
 
@@ -130,7 +206,7 @@ function PreviewItem({
 
   return (
 
-    <div className="rounded-2xl border border-gray-200 p-4">
+    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
 
       <p className="text-sm font-semibold text-gray-500">
 
@@ -138,7 +214,7 @@ function PreviewItem({
 
       </p>
 
-      <p className="mt-2 font-bold text-gray-900">
+      <p className="mt-2 font-bold text-gray-900 break-words">
 
         {value || "-"}
 

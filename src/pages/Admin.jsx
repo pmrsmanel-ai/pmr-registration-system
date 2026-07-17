@@ -288,9 +288,15 @@ function Admin() {
 
       {selectedMenu === "graduation" && (
 
-        <GraduationPage />
+  <GraduationPage
 
-      )}
+    applicants={applicants}
+
+    onRefresh={loadData}
+
+  />
+
+)}
 
       {/* ==========================================
           SETTINGS
