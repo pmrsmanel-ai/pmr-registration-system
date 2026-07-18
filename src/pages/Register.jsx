@@ -31,8 +31,14 @@ function Register() {
   } = methods;
 
   const [started, setStarted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+
+const [loading, setLoading] = useState(false);
+
+const [currentStep, setCurrentStep] = useState(1);
+
+const [duplicateData, setDuplicateData] = useState(null);
+
+const [showDuplicateModal, setShowDuplicateModal] = useState(false);
 
   const fields = {
 
@@ -93,60 +99,80 @@ function Register() {
 
   }
 
-  async function onSubmit(formData) {
+async function onSubmit(formData) {
 
-    try {
+  try {
 
-      setLoading(true);
+    setLoading(true);
 
-      const result =
-        await registerApplicant(formData);
+    const result = await registerApplicant(formData);
 
-      navigate("/success", {
+    // ==========================================
+    // DATA SUDAH TERDAFTAR
+    // ==========================================
 
-        state: {
+    if (result.duplicate) {
 
-          registrationNumber:
-            result.registrationNumber,
+      setDuplicateData(result);
 
-          fullName:
-            result.fullName,
+      setShowDuplicateModal(true);
 
-          class:
-            result.class,
-
-          status:
-            result.status,
-
-          createdAt:
-            result.createdAt,
-
-          photoUrl:
-            result.photoUrl,
-
-          qrCode:
-            result.qrCode,
-
-        },
-
-      });
-
-    } catch (err) {
-
-      console.error(err);
-
-      alert(
-        err.message ||
-        "Terjadi kesalahan saat menyimpan data."
-      );
-
-    } finally {
-
-      setLoading(false);
+      return;
 
     }
 
+    // ==========================================
+    // PENDAFTARAN BARU
+    // ==========================================
+
+    navigate("/success", {
+
+      state: {
+
+        registrationNumber:
+          result.registrationNumber,
+
+        fullName:
+          result.fullName,
+
+        class:
+          result.class,
+
+        status:
+          result.status,
+
+        createdAt:
+          result.createdAt,
+
+        photoUrl:
+          result.photoUrl,
+
+        qrCode:
+          result.qrCode,
+
+      },
+
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+
+      err.message ||
+
+      "Terjadi kesalahan saat menyimpan data."
+
+    );
+
+  } finally {
+
+    setLoading(false);
+
   }
+
+}
 
   return (
         <Layout>
@@ -299,6 +325,158 @@ function Register() {
 
       </FormLayout>
 
+{
+  showDuplicateModal && duplicateData && (
+
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5">
+
+      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
+
+        <div className="mb-6 text-center">
+
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-yellow-100">
+
+            <span className="text-4xl">
+              📋
+            </span>
+
+          </div>
+
+          <h2 className="text-2xl font-bold">
+
+            Data Pendaftaran Ditemukan
+
+          </h2>
+
+          <p className="mt-2 text-gray-500">
+
+            Anda sudah pernah melakukan pendaftaran.
+
+          </p>
+
+        </div>
+
+        <div className="space-y-3 rounded-2xl bg-gray-50 p-5">
+
+          <div className="flex justify-between">
+
+            <span className="text-gray-500">
+
+              Nama
+
+            </span>
+
+            <span className="font-semibold">
+
+              {duplicateData.fullName}
+
+            </span>
+
+          </div>
+
+          <div className="flex justify-between">
+
+            <span className="text-gray-500">
+
+              Nomor
+
+            </span>
+
+            <span className="font-semibold">
+
+              {duplicateData.registrationNumber}
+
+            </span>
+
+          </div>
+
+          <div className="flex justify-between">
+
+            <span className="text-gray-500">
+
+              Status
+
+            </span>
+
+            <span className="font-semibold text-red-700">
+
+              {duplicateData.status}
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <div className="mt-8 flex gap-3">
+
+          <button
+
+            onClick={() => {
+
+              setShowDuplicateModal(false);
+
+            }}
+
+            className="flex-1 rounded-xl border py-3 font-semibold"
+
+          >
+
+            Tutup
+
+          </button>
+
+          <button
+
+            onClick={() => {
+
+              navigate("/success", {
+
+                state: {
+
+                  registrationNumber:
+                    duplicateData.registrationNumber,
+
+                  fullName:
+                    duplicateData.fullName,
+
+                  class:
+                    duplicateData.class,
+
+                  status:
+                    duplicateData.status,
+
+                  createdAt:
+                    duplicateData.createdAt,
+
+                  photoUrl:
+                    duplicateData.photoUrl,
+
+                  qrCode:
+                    duplicateData.qrCode,
+
+                },
+
+              });
+
+            }}
+
+            className="flex-1 rounded-xl bg-red-700 py-3 font-semibold text-white hover:bg-red-800"
+
+          >
+
+            Lihat Kartu
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  )
+}
     </Layout>
       );
 

@@ -1,17 +1,31 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useLocation,
+} from "react-router-dom";
+
 import {
   Menu,
+  X,
   HeartHandshake,
   ArrowRight,
+  House,
+  Info,
+  CalendarDays,
+  CircleHelp,
+  GraduationCap,
 } from "lucide-react";
+
 import { useEffect, useState, Fragment } from "react";
 import Container from "./Container";
 
 function Navbar() {
+const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -21,26 +35,50 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+
+  if (open) {
+
+    document.body.style.overflow = "hidden";
+
+  } else {
+
+    document.body.style.overflow = "";
+
+  }
+
+  return () => {
+
+    document.body.style.overflow = "";
+
+  };
+
+}, [open]);
+
   const menus = [
   {
     title: "Tentang",
     href: "#tentang",
     type: "anchor",
+    icon: Info,
   },
   {
     title: "Timeline",
     href: "#timeline",
     type: "anchor",
+    icon: CalendarDays,
   },
   {
     title: "FAQ",
     href: "#faq",
     type: "anchor",
+    icon: CircleHelp,
   },
   {
-    title: "🎓 Hasil Seleksi",
+    title: "Hasil Seleksi",
     href: "/graduation",
     type: "route",
+    icon: GraduationCap,
   },
 ];
 
@@ -58,9 +96,7 @@ function scrollToSection(id) {
 }
 
 function renderMenu(menu, mobile = false) {
-  const baseClass = mobile
-    ? "block font-medium text-gray-700 transition hover:text-red-700"
-    : "font-medium text-gray-600 transition hover:text-red-700";
+  const Icon = menu.icon;
 
   if (menu.type === "route") {
     return (
@@ -68,33 +104,38 @@ function renderMenu(menu, mobile = false) {
         key={menu.title}
         to={menu.href}
         onClick={() => mobile && setOpen(false)}
-        className={baseClass}
+        className={
+          mobile
+            ? "flex items-center gap-3 rounded-2xl px-4 py-3 text-gray-700 transition hover:bg-red-50 hover:text-red-700"
+            : "flex items-center gap-2 font-medium text-gray-600 transition hover:text-red-700"
+        }
       >
-        {menu.title}
+        <Icon size={20} />
+        <span>{menu.title}</span>
       </Link>
     );
   }
 
   return (
-   <a
-  key={menu.title}
-  href={menu.href}
-  onClick={(e) => {
+    <a
+      key={menu.title}
+      href={menu.href}
+      onClick={(e) => {
+        e.preventDefault();
+        scrollToSection(menu.href);
 
-    e.preventDefault();
-
-    scrollToSection(menu.href);
-
-    if (mobile) {
-
-      setOpen(false);
-
-    }
-
-  }}
-  className={baseClass}
->
-      {menu.title}
+        if (mobile) {
+          setOpen(false);
+        }
+      }}
+      className={
+        mobile
+          ? "flex items-center gap-3 rounded-2xl px-4 py-3 text-gray-700 transition hover:bg-red-50 hover:text-red-700"
+          : "flex items-center gap-2 font-medium text-gray-600 transition hover:text-red-700"
+      }
+    >
+      <Icon size={20} />
+      <span>{menu.title}</span>
     </a>
   );
 }
@@ -109,21 +150,21 @@ function renderMenu(menu, mobile = false) {
               : "rounded-3xl bg-white/80 backdrop-blur-md"
           }`}
         >
-          <div className="flex h-20 items-center justify-between px-6 lg:px-8">
+          <div className="flex h-16 md:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link
               to="/"
               className="flex items-center gap-3"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-700 text-white shadow-lg">
-                <HeartHandshake size={24} />
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-700 text-white shadow-lg sm:h-12 sm:w-12">
+                <HeartHandshake className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
 
               <div>
-  <h1 className="text-lg font-extrabold tracking-tight text-gray-900">
+  <h1 className="text-base font-extrabold tracking-tight text-gray-900 sm:text-lg">
     PMR SMANEL
   </h1>
 
-  <p className="text-xs font-medium text-gray-500">
+  <p className="hidden text-xs font-medium text-gray-500 sm:block">
     Official Registration System
   </p>
 </div>
@@ -166,39 +207,46 @@ function renderMenu(menu, mobile = false) {
             </div>
 
             <button
-              onClick={() => setOpen(!open)}
-              className="rounded-xl border border-gray-200 p-2 md:hidden"
-            >
-              <Menu size={24} />
+  onClick={() => setOpen(!open)}
+  aria-label="Toggle navigation"
+  aria-expanded={open}
+  aria-controls="mobile-menu"
+  className="rounded-xl border border-gray-200 p-2 transition hover:bg-gray-50 md:hidden"
+>
+              {open ? (
+  <X size={24} />
+) : (
+  <Menu size={24} />
+)}
             </button>
           </div>
 
           {open && (
-            <div className="border-t border-gray-200 bg-white px-6 py-5 md:hidden">
-              <div className="space-y-4">
-                {menus.map((menu, index) => (
-  <React.Fragment key={menu.title}>
-    {index === 3 && (
-      <div className="h-5 w-px bg-gray-300" />
-    )}
-
-    {renderMenu(menu)}
-  </React.Fragment>
-))}
-
-                <Link
-  to="/register"
-  onClick={() => setOpen(false)}
-  className="group mt-4 flex items-center justify-center gap-2 rounded-2xl bg-red-700 py-3 font-semibold text-white transition-all duration-300 hover:bg-red-800"
+           <div
+  id="mobile-menu"
+  className="border-t border-gray-200 bg-white px-6 py-5 md:hidden"
 >
-  Gabung PMR
+  <div className="space-y-2">
+  {menus.map((menu, index) => (
+    <Fragment key={menu.title}>
+      {index === 3 && (
+        <div className="my-3 border-t border-gray-200" />
+      )}
 
-  <ArrowRight
-    size={18}
-    className="transition-transform duration-300 group-hover:translate-x-1"
-  />
-</Link>
-              </div>
+      {renderMenu(menu, true)}
+    </Fragment>
+  ))}
+
+  <Link
+    to="/register"
+    onClick={() => setOpen(false)}
+    className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 font-semibold text-white transition hover:bg-red-800"
+  >
+    Gabung PMR
+
+    <ArrowRight size={18} />
+  </Link>
+</div>
             </div>
           )}
         </div>

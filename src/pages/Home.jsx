@@ -70,7 +70,7 @@ function Home() {
 
       <Layout>
 
-        <div className="flex h-[70vh] items-center justify-center">
+        <div className="flex min-h-[70vh] items-center justify-center">
 
           <div className="h-14 w-14 animate-spin rounded-full border-4 border-red-200 border-t-red-700" />
 

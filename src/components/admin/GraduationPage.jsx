@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-
 import {
   Search,
   Users,
   Clock3,
   CheckCircle2,
   XCircle,
+  GraduationCap,
 } from "lucide-react";
 
 import {
@@ -13,138 +13,96 @@ import {
 } from "../../services/graduationApi";
 
 function GraduationPage({
-
   applicants = [],
-
   onRefresh,
-
 }) {
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("Semua");
+  const [loading, setLoading] = useState(false);
 
-  const [filter, setFilter] =
-    useState("Semua");
-
-  const [loading, setLoading] =
-    useState(false);
+  /* ==========================================
+     STATISTICS
+  ========================================== */
 
   const stats = useMemo(() => {
 
     return {
 
-      total:
-        applicants.length,
+      total: applicants.length,
 
-      pending:
-        applicants.filter(
+      pending: applicants.filter(
+        item => item.status === "Menunggu Verifikasi"
+      ).length,
 
-          item =>
+      accepted: applicants.filter(
+        item => item.status === "Diterima"
+      ).length,
 
-            item.status ===
-
-            "Menunggu Verifikasi"
-
-        ).length,
-
-      accepted:
-        applicants.filter(
-
-          item =>
-
-            item.status ===
-
-            "Diterima"
-
-        ).length,
-
-      rejected:
-        applicants.filter(
-
-          item =>
-
-            item.status ===
-
-            "Ditolak"
-
-        ).length,
+      rejected: applicants.filter(
+        item => item.status === "Ditolak"
+      ).length,
 
     };
 
   }, [applicants]);
 
-  const filteredApplicants =
+  /* ==========================================
+     FILTER
+  ========================================== */
 
-    useMemo(() => {
+  const filteredApplicants = useMemo(() => {
 
-      return applicants.filter(
+    return applicants.filter(item => {
 
-        item => {
+      const keyword = search.toLowerCase();
 
-          const keyword =
+      const matchSearch =
 
-            search.toLowerCase();
+        item.full_name
+          ?.toLowerCase()
+          .includes(keyword)
 
-          const matchSearch =
+        ||
 
-            item.full_name
+        item.registration_number
+          ?.toLowerCase()
+          .includes(keyword)
 
-              ?.toLowerCase()
+        ||
 
-              .includes(keyword)
+        item.class
+          ?.toLowerCase()
+          .includes(keyword);
 
-            ||
+      const matchFilter =
 
-            item.registration_number
+        filter === "Semua"
 
-              ?.toLowerCase()
+        ||
 
-              .includes(keyword)
+        item.status === filter;
 
-            ||
-
-            item.class
-
-              ?.toLowerCase()
-
-              .includes(keyword);
-
-          const matchFilter =
-
-            filter === "Semua"
-
-            ||
-
-            item.status === filter;
-
-          return (
-
-            matchSearch &&
-
-            matchFilter
-
-          );
-
-        }
-
+      return (
+        matchSearch &&
+        matchFilter
       );
 
-    }, [
+    });
 
-      applicants,
+  }, [
+    applicants,
+    search,
+    filter,
+  ]);
 
-      search,
-
-      filter,
-
-    ]);
+  /* ==========================================
+     CHANGE STATUS
+  ========================================== */
 
   async function changeStatus(
-
     id,
-
     status,
-
   ) {
 
     try {
@@ -152,11 +110,8 @@ function GraduationPage({
       setLoading(true);
 
       await publishGraduation(
-
         id,
-
         status,
-
       );
 
       await onRefresh();
@@ -180,410 +135,764 @@ function GraduationPage({
   }
 
   return (
+        <div className="space-y-8">
 
-    <div className="space-y-8">
+      {/* =========================================================
+          HERO
+      ========================================================== */}
 
-      {/* HEADER */}
+      <section className="overflow-hidden rounded-3xl bg-gradient-to-r from-red-700 via-red-600 to-red-500 shadow-xl">
 
-      <div className="rounded-3xl bg-gradient-to-r from-red-700 to-red-500 p-8 text-white">
+        <div className="flex flex-col gap-8 p-8 lg:flex-row lg:items-center lg:justify-between">
 
-        <h1 className="text-4xl font-black">
+          {/* LEFT */}
 
-          Kelulusan Peserta
+          <div className="text-white">
 
-        </h1>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 backdrop-blur">
 
-        <p className="mt-3 text-red-100">
+              <GraduationCap size={18} />
 
-          Verifikasi hasil seleksi
+              <span className="text-sm font-medium">
+                Dashboard Kelulusan
+              </span>
 
-          Anggota Baru PMR
+            </div>
 
-          SMAN 1 AIKMEL
+            <h1 className="mt-5 text-4xl font-black lg:text-5xl">
 
-        </p>
+              Kelulusan Peserta
 
-      </div>
+            </h1>
 
-      {/* STATISTIK */}
+            <p className="mt-4 max-w-2xl text-red-100 leading-7">
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              Kelola hasil seleksi anggota baru PMR
+              SMAN 1 AIKMEL.
+              Publikasikan hasil kelulusan peserta
+              secara cepat, aman dan terstruktur.
+
+            </p>
+
+          </div>
+
+          {/* RIGHT */}
+
+          <div className="rounded-3xl bg-white/10 p-8 text-white backdrop-blur">
+
+            <p className="text-sm uppercase tracking-widest text-red-100">
+
+              Total Peserta
+
+            </p>
+
+            <h2 className="mt-3 text-6xl font-black">
+
+              {stats.total}
+
+            </h2>
+
+            <div className="mt-6 grid grid-cols-3 gap-5">
+
+              <div>
+
+                <p className="text-xs text-red-100">
+
+                  Menunggu
+
+                </p>
+
+                <h3 className="mt-1 text-2xl font-bold">
+
+                  {stats.pending}
+
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-xs text-red-100">
+
+                  Diterima
+
+                </p>
+
+                <h3 className="mt-1 text-2xl font-bold">
+
+                  {stats.accepted}
+
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-xs text-red-100">
+
+                  Ditolak
+
+                </p>
+
+                <h3 className="mt-1 text-2xl font-bold">
+
+                  {stats.rejected}
+
+                </h3>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* =========================================================
+          STATISTIC
+      ========================================================== */}
+
+      <section className="grid grid-cols-2 gap-5 xl:grid-cols-4">
 
         <StatCard
-
-          icon={<Users size={34}/>}
-
-          title="Total"
-
+          title="Total Peserta"
           value={stats.total}
-
-          color="bg-red-600"
-
+          icon={<Users size={28} />}
+          color="red"
         />
 
         <StatCard
-
-          icon={<Clock3 size={34}/>}
-
           title="Menunggu"
-
           value={stats.pending}
-
-          color="bg-yellow-500"
-
+          icon={<Clock3 size={28} />}
+          color="yellow"
         />
 
         <StatCard
-
-          icon={<CheckCircle2 size={34}/>}
-
           title="Diterima"
-
           value={stats.accepted}
-
-          color="bg-green-600"
-
+          icon={<CheckCircle2 size={28} />}
+          color="green"
         />
 
         <StatCard
-
-          icon={<XCircle size={34}/>}
-
           title="Ditolak"
-
           value={stats.rejected}
-
-          color="bg-gray-700"
-
+          icon={<XCircle size={28} />}
+          color="gray"
         />
 
-      </div>
+      </section>
 
-      {/* SEARCH */}
+      {/* =========================================================
+          SEARCH & FILTER
+      ========================================================== */}
 
-      <div className="rounded-3xl bg-white p-6 shadow">
+      <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
 
-        <div className="flex flex-col gap-5 lg:flex-row">
+        <div className="flex flex-col gap-4 lg:flex-row">
 
           <div className="relative flex-1">
 
             <Search
-
               size={20}
-
-              className="absolute left-5 top-5 text-gray-400"
-
+              className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
             />
 
             <input
-
               value={search}
-
-              onChange={(e)=>
-
-                setSearch(
-
-                  e.target.value
-
-                )
-
-              }
-
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama, nomor pendaftaran atau kelas..."
-
-              className="w-full rounded-2xl border border-gray-300 py-4 pl-14 pr-4 outline-none transition focus:border-red-600"
-
+              className="
+                w-full
+                rounded-2xl
+                border
+                border-gray-300
+                py-3.5
+                pl-14
+                pr-4
+                outline-none
+                transition
+                focus:border-red-500
+                focus:ring-4
+                focus:ring-red-100
+              "
             />
 
           </div>
 
           <select
-
             value={filter}
-
-            onChange={(e)=>
-
-              setFilter(
-
-                e.target.value
-
-              )
-
-            }
-
-            className="rounded-2xl border border-gray-300 px-6 py-4 outline-none"
-
+            onChange={(e) => setFilter(e.target.value)}
+            className="
+              rounded-2xl
+              border
+              border-gray-300
+              px-5
+              py-3.5
+              outline-none
+              transition
+              focus:border-red-500
+              focus:ring-4
+              focus:ring-red-100
+            "
           >
 
-            <option>
-
-              Semua
-
+            <option value="Semua">
+              Semua Status
             </option>
 
-            <option>
-
+            <option value="Menunggu Verifikasi">
               Menunggu Verifikasi
-
             </option>
 
-            <option>
-
+            <option value="Diterima">
               Diterima
-
             </option>
 
-            <option>
-
+            <option value="Ditolak">
               Ditolak
-
             </option>
 
           </select>
 
         </div>
 
+        <div className="mt-5 flex flex-wrap gap-3">
+
+          <span className="rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
+            Total : {filteredApplicants.length}
+          </span>
+
+          <span className="rounded-full bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-700">
+            Pending : {stats.pending}
+          </span>
+
+          <span className="rounded-full bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
+            Diterima : {stats.accepted}
+          </span>
+
+          <span className="rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700">
+            Ditolak : {stats.rejected}
+          </span>
+
+        </div>
+
+      </section>
+
+      {/* =========================================================
+          DESKTOP TABLE
+      ========================================================== */}
+      <section className="hidden overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-xl lg:block">
+
+  <div className="border-b border-gray-200 bg-gray-50 px-6 py-5">
+
+    <div className="flex items-center justify-between">
+
+      <div>
+
+        <h2 className="text-lg font-bold text-gray-800">
+          Daftar Peserta
+        </h2>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Kelola status kelulusan peserta PMR.
+        </p>
+
       </div>
-            {/* TABLE */}
 
-      <div className="overflow-hidden rounded-3xl bg-white shadow-xl">
+      <div className="rounded-2xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">
 
-        <table className="w-full">
+        {filteredApplicants.length} Peserta
 
-          <thead className="bg-red-700 text-white">
+      </div>
 
-            <tr>
+    </div>
 
-              <th className="px-5 py-4 text-left">
+  </div>
 
-                No
+  <div className="overflow-x-auto">
 
-              </th>
+    <table className="min-w-full">
 
-              <th className="px-5 py-4 text-left">
+      <thead className="bg-gradient-to-r from-red-700 to-red-600 text-white">
 
-                Nomor
+        <tr>
 
-              </th>
+          <th className="px-6 py-4 text-left text-sm font-semibold">
+            No
+          </th>
 
-              <th className="px-5 py-4 text-left">
+          <th className="px-6 py-4 text-left text-sm font-semibold">
+            Peserta
+          </th>
 
-                Nama
+          <th className="px-6 py-4 text-left text-sm font-semibold">
+            Nomor
+          </th>
 
-              </th>
+          <th className="px-6 py-4 text-left text-sm font-semibold">
+            Kelas
+          </th>
 
-              <th className="px-5 py-4 text-left">
+          <th className="px-6 py-4 text-center text-sm font-semibold">
+            Status
+          </th>
 
-                Kelas
+          <th className="px-6 py-4 text-center text-sm font-semibold">
+            Aksi
+          </th>
 
-              </th>
+        </tr>
 
-              <th className="px-5 py-4 text-center">
+      </thead>
 
-                Status
+      <tbody>
 
-              </th>
+        {filteredApplicants.length === 0 ? (
 
-              <th className="px-5 py-4 text-center">
+          <tr>
 
-                Aksi
+            <td
+              colSpan={6}
+              className="py-20 text-center"
+            >
 
-              </th>
+              <Users
+                size={48}
+                className="mx-auto text-gray-300"
+              />
+
+              <h3 className="mt-5 text-lg font-bold text-gray-700">
+
+                Tidak ada peserta
+
+              </h3>
+
+              <p className="mt-2 text-sm text-gray-500">
+
+                Tidak ditemukan data yang sesuai.
+
+              </p>
+
+            </td>
+
+          </tr>
+
+        ) : (
+
+          filteredApplicants.map((item, index) => (
+
+            <tr
+              key={item.id}
+              className="border-b border-gray-100 transition hover:bg-red-50"
+            >
+
+              <td className="px-6 py-5 font-semibold text-gray-700">
+
+                {index + 1}
+
+              </td>
+
+              <td className="px-6 py-5">
+
+                <div className="flex items-center gap-4">
+
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 font-bold text-red-700">
+
+                    {item.full_name?.charAt(0)}
+
+                  </div>
+
+                  <div>
+
+                    <h3 className="font-semibold text-gray-800">
+
+                      {item.full_name}
+
+                    </h3>
+
+                    <p className="text-sm text-gray-500">
+
+                      Calon Anggota PMR
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+              <td className="px-6 py-5 font-semibold text-red-700">
+
+                {item.registration_number}
+
+              </td>
+
+              <td className="px-6 py-5">
+
+                {item.class}
+
+              </td>
+
+              <td className="px-6 py-5 text-center">
+
+                <StatusBadge
+                  status={item.status}
+                />
+
+              </td>
+
+              <td className="px-6 py-5">
+
+                <div className="flex justify-center gap-2">
+                                    <button
+                    disabled={
+                      loading ||
+                      item.status === "Diterima"
+                    }
+                    onClick={() =>
+                      changeStatus(
+                        item.id,
+                        "Diterima"
+                      )
+                    }
+                    className="
+                      rounded-xl
+                      bg-green-600
+                      px-4
+                      py-2
+                      text-sm
+                      font-semibold
+                      text-white
+                      transition
+                      hover:bg-green-700
+                      disabled:cursor-not-allowed
+                      disabled:opacity-50
+                    "
+                  >
+                    ✓ Terima
+                  </button>
+
+                  <button
+                    disabled={
+                      loading ||
+                      item.status === "Ditolak"
+                    }
+                    onClick={() =>
+                      changeStatus(
+                        item.id,
+                        "Ditolak"
+                      )
+                    }
+                    className="
+                      rounded-xl
+                      bg-red-600
+                      px-4
+                      py-2
+                      text-sm
+                      font-semibold
+                      text-white
+                      transition
+                      hover:bg-red-700
+                      disabled:cursor-not-allowed
+                      disabled:opacity-50
+                    "
+                  >
+                    ✕ Tolak
+                  </button>
+
+                </div>
+
+              </td>
 
             </tr>
 
-          </thead>
+          ))
 
-          <tbody>
+        )}
 
-            {
+      </tbody>
 
-              filteredApplicants.length===0 ? (
+    </table>
 
-                <tr>
+  </div>
 
-                  <td
+</section>
 
-                    colSpan={6}
+{/* =========================================================
+    MOBILE CARD
+========================================================= */}
+<section className="space-y-4 lg:hidden">
 
-                    className="py-16 text-center text-gray-500"
+  {filteredApplicants.length === 0 ? (
 
-                  >
+    <div className="rounded-3xl border border-dashed border-gray-300 bg-white py-14 text-center shadow-sm">
 
-                    Tidak ada peserta.
+      <Users
+        size={48}
+        className="mx-auto text-gray-300"
+      />
 
-                  </td>
+      <h3 className="mt-5 text-lg font-bold text-gray-700">
+        Tidak ada peserta
+      </h3>
 
-                </tr>
+      <p className="mt-2 px-6 text-sm text-gray-500">
+        Tidak ditemukan peserta yang sesuai
+        dengan pencarian atau filter.
+      </p>
 
-              ) : (
+    </div>
 
-                filteredApplicants.map(
+  ) : (
 
-                  (item,index)=>(
+    filteredApplicants.map((item, index) => (
 
-                    <tr
+      <article
+        key={item.id}
+        className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:shadow-lg"
+      >
 
-                      key={item.id}
+        {/* HEADER */}
 
-                      className="border-b transition hover:bg-gray-50"
+        <div className="bg-gradient-to-r from-red-700 to-red-600 p-5 text-white">
 
-                    >
+          <div className="flex items-center justify-between">
 
-                      <td className="px-5 py-4">
+            <div>
 
-                        {index+1}
+              <p className="text-xs uppercase tracking-widest text-red-100">
 
-                      </td>
+                Peserta #{index + 1}
 
-                      <td className="px-5 py-4 font-semibold">
+              </p>
 
-                        {item.registration_number}
+              <h2 className="mt-2 text-lg font-bold">
 
-                      </td>
+                {item.registration_number}
 
-                      <td className="px-5 py-4">
+              </h2>
 
-                        <div>
+            </div>
 
-                          <h3 className="font-semibold">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 text-xl font-bold">
 
-                            {item.full_name}
+              {item.full_name?.charAt(0)}
 
-                          </h3>
+            </div>
 
-                        </div>
+          </div>
 
-                      </td>
+        </div>
 
-                      <td className="px-5 py-4">
+        {/* BODY */}
 
-                        {item.class}
+        <div className="space-y-5 p-5">
 
-                      </td>
+          <div>
 
-                      <td className="px-5 py-4 text-center">
+            <p className="text-xs uppercase tracking-wide text-gray-400">
 
-                        <StatusBadge
+              Nama Peserta
 
-                          status={item.status}
+            </p>
 
-                        />
+            <h3 className="mt-1 text-lg font-bold text-gray-800">
 
-                      </td>
+              {item.full_name}
 
-                      <td className="px-5 py-4">
+            </h3>
 
-                        <div className="flex justify-center gap-2">
+          </div>
 
-                          <button
+          <div className="grid grid-cols-2 gap-4">
 
-                            disabled={loading}
+            <div>
 
-                            onClick={()=>{
+              <p className="text-xs uppercase tracking-wide text-gray-400">
 
-                              changeStatus(
+                Kelas
 
-                                item.id,
+              </p>
 
-                                "Diterima"
+              <p className="mt-1 font-semibold text-gray-700">
 
-                              );
+                {item.class}
 
-                            }}
+              </p>
 
-                            className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-60"
+            </div>
 
-                          >
+            <div>
 
-                            Terima
+              <p className="text-xs uppercase tracking-wide text-gray-400">
 
-                          </button>
+                Status
 
-                          <button
+              </p>
 
-                            disabled={loading}
+              <div className="mt-2">
 
-                            onClick={()=>{
+                <StatusBadge
+                  status={item.status}
+                />
 
-                              changeStatus(
+              </div>
 
-                                item.id,
+            </div>
 
-                                "Ditolak"
+          </div>
 
-                              );
+          {/* ACTION */}
 
-                            }}
+          <div className="grid grid-cols-2 gap-3">
 
-                            className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-60"
-
-                          >
-
-                            Tolak
-
-                          </button>
-
-                        </div>
-
-                      </td>
-
-                    </tr>
-
-                  )
-
+            <button
+              disabled={
+                loading ||
+                item.status === "Diterima"
+              }
+              onClick={() =>
+                changeStatus(
+                  item.id,
+                  "Diterima"
                 )
+              }
+              className="
+                rounded-2xl
+                bg-green-600
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                transition
+                hover:bg-green-700
+                disabled:opacity-50
+                disabled:cursor-not-allowed
+              "
+            >
+              ✓ Terima
+            </button>
 
-              )
+            <button
+              disabled={
+                loading ||
+                item.status === "Ditolak"
+              }
+              onClick={() =>
+                changeStatus(
+                  item.id,
+                  "Ditolak"
+                )
+              }
+              className="
+                rounded-2xl
+                bg-red-600
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                transition
+                hover:bg-red-700
+                disabled:opacity-50
+                disabled:cursor-not-allowed
+              "
+            >
+              ✕ Tolak
+            </button>
 
-            }
+          </div>
 
-          </tbody>
+        </div>
 
-        </table>
+      </article>
 
-      </div>
+    ))
+
+  )}
+
+</section>
 
     </div>
 
   );
 
 }
-/* ==========================================
+/* =========================================================
    STAT CARD
-========================================== */
+========================================================= */
 
 function StatCard({
-
   icon,
-
   title,
-
   value,
-
   color,
-
 }) {
+
+  const colors = {
+
+    red: {
+      bg: "bg-red-50",
+      icon: "bg-red-100 text-red-600",
+      text: "text-red-700",
+    },
+
+    yellow: {
+      bg: "bg-yellow-50",
+      icon: "bg-yellow-100 text-yellow-600",
+      text: "text-yellow-700",
+    },
+
+    green: {
+      bg: "bg-green-50",
+      icon: "bg-green-100 text-green-600",
+      text: "text-green-700",
+    },
+
+    gray: {
+      bg: "bg-gray-50",
+      icon: "bg-gray-200 text-gray-700",
+      text: "text-gray-700",
+    },
+
+  };
+
+  const style = colors[color];
 
   return (
 
     <div
-
-      className={`${color} rounded-3xl p-6 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl`}
-
+      className={`
+        ${style.bg}
+        rounded-3xl
+        border
+        border-gray-100
+        p-6
+        shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-lg
+      `}
     >
 
       <div className="flex items-center justify-between">
 
         <div>
 
-          <p className="text-sm opacity-90">
+          <p className="text-sm text-gray-500">
 
             {title}
 
           </p>
 
-          <h2 className="mt-3 text-5xl font-black">
+          <h2
+            className={`mt-3 text-4xl font-black ${style.text}`}
+          >
 
             {value}
 
@@ -591,7 +900,17 @@ function StatCard({
 
         </div>
 
-        <div className="rounded-2xl bg-white/20 p-4">
+        <div
+          className={`
+            ${style.icon}
+            flex
+            h-16
+            w-16
+            items-center
+            justify-center
+            rounded-2xl
+          `}
+        >
 
           {icon}
 
@@ -605,51 +924,78 @@ function StatCard({
 
 }
 
-/* ==========================================
+/* =========================================================
    STATUS BADGE
-========================================== */
+========================================================= */
 
 function StatusBadge({
-
   status,
-
 }) {
 
-  let cls =
+  let bg =
+    "bg-yellow-100";
 
-    "bg-yellow-100 text-yellow-700";
+  let text =
+    "text-yellow-700";
+
+  let dot =
+    "bg-yellow-500";
 
   if (
-
     status === "Diterima"
-
   ) {
 
-    cls =
+    bg =
+      "bg-green-100";
 
-      "bg-green-100 text-green-700";
+    text =
+      "text-green-700";
+
+    dot =
+      "bg-green-500";
 
   }
 
   if (
-
     status === "Ditolak"
-
   ) {
 
-    cls =
+    bg =
+      "bg-red-100";
 
-      "bg-red-100 text-red-700";
+    text =
+      "text-red-700";
+
+    dot =
+      "bg-red-500";
 
   }
 
   return (
 
     <span
-
-      className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold ${cls}`}
-
+      className={`
+        inline-flex
+        items-center
+        gap-2
+        rounded-full
+        ${bg}
+        px-4
+        py-2
+        text-sm
+        font-semibold
+        ${text}
+      `}
     >
+
+      <span
+        className={`
+          h-2.5
+          w-2.5
+          rounded-full
+          ${dot}
+        `}
+      />
 
       {status}
 

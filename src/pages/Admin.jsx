@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
+import { Menu, X } from "lucide-react";
 import { supabase } from "../services/supabase";
 import { exportApplicants } from "../utils/exportExcel";
 
@@ -26,8 +26,8 @@ function Admin() {
   const [loading, setLoading] =
     useState(true);
 
-  const [selectedMenu, setSelectedMenu] =
-    useState("dashboard");
+  const [selectedMenu, setSelectedMenu] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [stats, setStats] =
     useState({
@@ -196,15 +196,50 @@ function Admin() {
 
   <div className="flex min-h-screen bg-gray-100">
 
-    <Sidebar
-
-      selected={selectedMenu}
-
-      setSelected={setSelectedMenu}
-
+  {/* Overlay Mobile */}
+  {sidebarOpen && (
+    <div
+      className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+      onClick={() => setSidebarOpen(false)}
     />
+  )}
 
-    <main className="flex-1 p-8">
+  {/* Sidebar */}
+  <div
+    className={`
+      fixed inset-y-0 left-0 z-50
+      transform transition-transform duration-300
+      lg:static lg:translate-x-0
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+    `}
+  >
+    <Sidebar
+      selected={selectedMenu}
+      setSelected={(menu) => {
+        setSelectedMenu(menu);
+        setSidebarOpen(false);
+      }}
+    />
+  </div>
+
+  <main className="flex-1 p-4 lg:p-8">
+
+    <div className="mb-6 flex items-center justify-between lg:hidden">
+
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="rounded-xl border bg-white p-3 shadow"
+  >
+    <Menu size={22} />
+  </button>
+
+  <h1 className="text-lg font-bold">
+    Admin PMR
+  </h1>
+
+  <div className="w-10" />
+
+</div>
 
       {/* ==========================================
           DASHBOARD

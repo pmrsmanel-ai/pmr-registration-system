@@ -47,29 +47,29 @@ function Sidebar({
 
   return (
 
-    <aside className="flex min-h-screen w-72 flex-col bg-red-700 text-white">
+    <aside className="flex h-screen w-64 flex-col bg-red-700 text-white">
 
       {/* HEADER */}
 
-      <div className="border-b border-red-600 p-8">
+      <div className="border-b border-red-600 px-6 py-6">
 
         <img
 
           src={`${import.meta.env.BASE_URL}images/logo-pmr.png`}
 
-          className="mx-auto h-24"
+          className="mx-auto h-20 w-auto"
 
           alt="Logo PMR"
 
         />
 
-        <h2 className="mt-5 text-center text-2xl font-black">
+        <h2 className="mt-4 text-center text-xl font-black">
 
           Admin PMR
 
         </h2>
 
-        <p className="mt-2 text-center text-red-100">
+        <p className="mt-1 text-center text-sm text-red-100">
 
           SMAN 1 AIKMEL
 
@@ -79,7 +79,7 @@ function Sidebar({
 
       {/* MENU */}
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto px-3 py-4">
 
         <MenuButton
 
@@ -338,13 +338,13 @@ function Sidebar({
 
       {/* FOOTER */}
 
-      <div className="border-t border-red-600 p-5">
+      <div className="border-t border-red-600 p-4">
 
         <button
 
           onClick={logout}
 
-          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-white py-4 font-semibold transition hover:bg-white hover:text-red-700"
+          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-white py-3.5 font-semibold transition hover:bg-white hover:text-red-700"
 
         >
 
@@ -386,41 +386,25 @@ function MenuButton({
 
       onClick={onClick}
 
-      className={`
-
-        flex
-
-        w-full
-
-        items-center
-
-        gap-3
-
-        rounded-2xl
-
-        transition
-
-        ${
-
-          small
-
-            ? "px-3 py-3"
-
-            : "px-4 py-4"
-
-        }
-
-        ${
-
-          active
-
-            ? "bg-white text-red-700 shadow"
-
-            : "hover:bg-red-600"
-
-        }
-
-      `}
+className={`
+  flex
+  w-full
+  items-center
+  gap-3
+  rounded-2xl
+  transition-all
+  duration-200
+  ${
+    small
+      ? "px-3 py-2.5"
+      : "px-4 py-3"
+  }
+  ${
+    active
+      ? "bg-white text-red-700 shadow-md scale-[1.02]"
+      : "hover:bg-red-600/80"
+  }
+`}
 
     >
 

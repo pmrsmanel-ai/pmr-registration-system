@@ -61,6 +61,7 @@ function Success() {
 
           </div>
 
+          console.log(state);
           <RegistrationCard
             ref={cardRef}
             data={state}
