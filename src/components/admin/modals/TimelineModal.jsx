@@ -60,13 +60,13 @@ function TimelineModal({
 
   ) {
 
-    setForm({
+    setForm((prev) => ({
 
-      ...form,
+      ...prev,
 
       [field]: value,
 
-    });
+    }));
 
   }
 
@@ -86,9 +86,7 @@ function TimelineModal({
 
         );
 
-      }
-
-      else {
+      } else {
 
         await createTimeline(
 
@@ -120,31 +118,27 @@ function TimelineModal({
 
   return (
 
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
 
-      <div className="max-h-[95vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
+      <div className="flex max-h-[95vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
 
-        <div className="sticky top-0 flex items-center justify-between border-b bg-white px-8 py-6">
+        {/* ================= HEADER ================= */}
+
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-5">
 
           <div>
 
-            <h2 className="text-3xl font-black">
+            <h2 className="text-2xl font-black text-gray-900 sm:text-3xl">
 
-              {
-
-                isEdit
-
-                  ? "Edit Timeline"
-
-                  : "Tambah Timeline"
-
-              }
+              {isEdit
+                ? "Edit Timeline"
+                : "Tambah Timeline"}
 
             </h2>
 
-            <p className="mt-2 text-gray-500">
+            <p className="mt-1 text-sm text-gray-500">
 
-              Kelola timeline pendaftaran PMR.
+              Kelola tahapan pendaftaran PMR SMANEL.
 
             </p>
 
@@ -154,225 +148,286 @@ function TimelineModal({
 
             onClick={onClose}
 
-            className="rounded-xl p-2 hover:bg-gray-100"
+            className="rounded-xl p-2 transition hover:bg-gray-100"
 
           >
 
-            <X size={28}/>
+            <X size={26} />
 
           </button>
 
         </div>
 
-        <div className="space-y-6 p-8">
-                      <div className="grid gap-6 md:grid-cols-2">
+        {/* ================= BODY ================= */}
 
-            <Input
+        <div className="flex-1 overflow-y-auto p-6">
 
-              label="Judul Timeline"
+          <div className="space-y-6">
+                        {/* ================= INFORMASI DASAR ================= */}
 
-              value={form.title}
+            <div className="rounded-3xl border border-gray-200 p-6">
 
-              onChange={(v)=>
+              <h3 className="mb-5 text-lg font-bold text-gray-900">
 
-                change("title",v)
+                Informasi Timeline
 
-              }
+              </h3>
 
-            />
+              <div className="grid gap-5 lg:grid-cols-2">
 
-            <Input
+                <Input
 
-              label="Urutan"
+                  label="Judul Timeline"
 
-              type="number"
+                  placeholder="Contoh : Pendaftaran"
 
-              value={form.sort_order}
+                  value={form.title}
 
-              onChange={(v)=>
+                  onChange={(v) =>
+                    change("title", v)
+                  }
 
-                change(
+                />
 
-                  "sort_order",
+                <Input
 
-                  Number(v)
+                  label="Urutan"
 
-                )
+                  type="number"
 
-              }
+                  value={form.sort_order}
 
-            />
+                  onChange={(v) =>
+                    change(
+                      "sort_order",
+                      Number(v)
+                    )
+                  }
 
-          </div>
+                />
 
-          <div>
+              </div>
 
-            <label className="font-semibold">
+              <div className="mt-5">
 
-              Deskripsi
+                <label className="text-sm font-semibold text-gray-700">
 
-            </label>
+                  Deskripsi
 
-            <textarea
+                </label>
 
-              rows={4}
+                <textarea
 
-              value={form.description}
+                  rows={4}
 
-              onChange={(e)=>
+                  value={form.description}
 
-                change(
+                  onChange={(e) =>
+                    change(
+                      "description",
+                      e.target.value
+                    )
+                  }
 
-                  "description",
+                  placeholder="Masukkan deskripsi timeline..."
 
-                  e.target.value
+                  className="mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
 
-                )
+                />
 
-              }
-
-              className="mt-2 w-full rounded-2xl border border-gray-300 p-4 outline-none transition focus:border-red-600"
-
-            />
-
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-
-            <div>
-
-              <label className="font-semibold">
-
-                Tanggal Mulai
-
-              </label>
-
-              <input
-
-                type="date"
-
-                value={form.start_date}
-
-                onChange={(e)=>
-
-                  change(
-
-                    "start_date",
-
-                    e.target.value
-
-                  )
-
-                }
-
-                className="mt-2 w-full rounded-2xl border border-gray-300 p-4"
-
-              />
+              </div>
 
             </div>
 
-            <div>
+            {/* ================= PERIODE ================= */}
 
-              <label className="font-semibold">
+            <div className="rounded-3xl border border-gray-200 p-6">
 
-                Tanggal Selesai
+              <h3 className="mb-5 text-lg font-bold text-gray-900">
 
-              </label>
+                Periode Pelaksanaan
 
-              <input
+              </h3>
 
-                type="date"
+              <div className="grid gap-5 lg:grid-cols-2">
 
-                value={form.end_date}
+                <div>
 
-                onChange={(e)=>
+                  <label className="text-sm font-semibold text-gray-700">
 
-                  change(
+                    Tanggal Mulai
 
-                    "end_date",
+                  </label>
 
-                    e.target.value
+                  <input
 
-                  )
+                    type="date"
 
-                }
+                    value={form.start_date}
 
-                className="mt-2 w-full rounded-2xl border border-gray-300 p-4"
+                    onChange={(e) =>
+                      change(
+                        "start_date",
+                        e.target.value
+                      )
+                    }
 
-              />
+                    className="mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
+
+                  />
+
+                </div>
+
+                <div>
+
+                  <label className="text-sm font-semibold text-gray-700">
+
+                    Tanggal Selesai
+
+                  </label>
+
+                  <input
+
+                    type="date"
+
+                    value={form.end_date}
+
+                    onChange={(e) =>
+                      change(
+                        "end_date",
+                        e.target.value
+                      )
+                    }
+
+                    className="mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
+
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+                        {/* ================= TAMPILAN ================= */}
+
+            <div className="rounded-3xl border border-gray-200 p-6">
+
+              <h3 className="mb-5 text-lg font-bold text-gray-900">
+
+                Tampilan Timeline
+
+              </h3>
+
+              <div className="grid gap-5 lg:grid-cols-2">
+
+                <div>
+
+                  <label className="text-sm font-semibold text-gray-700">
+
+                    Icon
+
+                  </label>
+
+                  <select
+
+                    value={form.icon}
+
+                    onChange={(e) =>
+                      change("icon", e.target.value)
+                    }
+
+                    className="mt-2 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
+
+                  >
+
+                    <option value="CalendarDays">📅 Calendar</option>
+
+                    <option value="ClipboardCheck">📋 Clipboard</option>
+
+                    <option value="ShieldCheck">🛡 Shield</option>
+
+                    <option value="Users">👥 Users</option>
+
+                    <option value="Award">🏅 Award</option>
+
+                    <option value="Trophy">🏆 Trophy</option>
+
+                    <option value="HeartHandshake">❤️ Heart Handshake</option>
+
+                  </select>
+
+                </div>
+
+                <div>
+
+                  <label className="text-sm font-semibold text-gray-700">
+
+                    Warna
+
+                  </label>
+
+                  <select
+
+                    value={form.color}
+
+                    onChange={(e) =>
+                      change("color", e.target.value)
+                    }
+
+                    className="mt-2 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
+
+                  >
+
+                    <option value="red">🔴 Merah</option>
+
+                    <option value="green">🟢 Hijau</option>
+
+                    <option value="blue">🔵 Biru</option>
+
+                    <option value="yellow">🟡 Kuning</option>
+
+                  </select>
+
+                </div>
+
+              </div>
 
             </div>
 
-          </div>
-                    <div className="grid gap-6 md:grid-cols-2">
+            {/* ================= STATUS ================= */}
 
-            <div>
+            <div className="rounded-3xl border border-gray-200 p-6">
 
-              <label className="font-semibold">
+              <h3 className="mb-5 text-lg font-bold text-gray-900">
 
-                Icon
+                Status Timeline
 
-              </label>
+              </h3>
 
               <select
 
-                value={form.icon}
+                value={form.is_active ? "true" : "false"}
 
-                onChange={(e)=>
-
+                onChange={(e) =>
                   change(
-
-                    "icon",
-
-                    e.target.value
-
+                    "is_active",
+                    e.target.value === "true"
                   )
-
                 }
 
-                className="mt-2 w-full rounded-2xl border border-gray-300 p-4"
+                className="w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
 
               >
 
-                <option value="CalendarDays">
+                <option value="true">
 
-                  CalendarDays
-
-                </option>
-
-                <option value="ClipboardCheck">
-
-                  ClipboardCheck
+                  🟢 Aktif
 
                 </option>
 
-                <option value="ShieldCheck">
+                <option value="false">
 
-                  ShieldCheck
-
-                </option>
-
-                <option value="Users">
-
-                  Users
-
-                </option>
-
-                <option value="Award">
-
-                  Award
-
-                </option>
-
-                <option value="Trophy">
-
-                  Trophy
-
-                </option>
-
-                <option value="HeartHandshake">
-
-                  HeartHandshake
+                  ⚪ Non Aktif
 
                 </option>
 
@@ -380,122 +435,23 @@ function TimelineModal({
 
             </div>
 
-            <div>
-
-              <label className="font-semibold">
-
-                Warna
-
-              </label>
-
-              <select
-
-                value={form.color}
-
-                onChange={(e)=>
-
-                  change(
-
-                    "color",
-
-                    e.target.value
-
-                  )
-
-                }
-
-                className="mt-2 w-full rounded-2xl border border-gray-300 p-4"
-
-              >
-
-                <option value="red">
-
-                  Merah
-
-                </option>
-
-                <option value="green">
-
-                  Hijau
-
-                </option>
-
-                <option value="blue">
-
-                  Biru
-
-                </option>
-
-                <option value="yellow">
-
-                  Kuning
-
-                </option>
-
-              </select>
-
-            </div>
-
           </div>
 
-          <div>
+        </div>
 
-            <label className="font-semibold">
+        {/* ================= FOOTER ================= */}
 
-              Status
+        <div className="sticky bottom-0 border-t border-gray-200 bg-white px-6 py-5">
 
-            </label>
-
-            <select
-
-              value={
-
-                form.is_active
-
-                  ? "true"
-
-                  : "false"
-
-              }
-
-              onChange={(e)=>
-
-                change(
-
-                  "is_active",
-
-                  e.target.value === "true"
-
-                )
-
-              }
-
-              className="mt-2 w-full rounded-2xl border border-gray-300 p-4"
-
-            >
-
-              <option value="true">
-
-                Aktif
-
-              </option>
-
-              <option value="false">
-
-                Non Aktif
-
-              </option>
-
-            </select>
-
-          </div>
-                    <div className="flex justify-end gap-4 border-t pt-6">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 
             <button
 
               onClick={onClose}
 
-              className="rounded-2xl border border-gray-300 px-8 py-4 font-semibold hover:bg-gray-100"
+              disabled={saving}
+
+              className="rounded-2xl border border-gray-300 px-6 py-3 font-semibold transition hover:bg-gray-100 disabled:opacity-60"
 
             >
 
@@ -509,25 +465,17 @@ function TimelineModal({
 
               disabled={saving}
 
-              className="flex items-center gap-2 rounded-2xl bg-green-600 px-8 py-4 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
 
             >
 
               <Save size={18} />
 
-              {
-
-                saving
-
-                  ? "Menyimpan..."
-
-                  : isEdit
-
-                  ? "Simpan Perubahan"
-
-                  : "Tambah Timeline"
-
-              }
+              {saving
+                ? "Menyimpan..."
+                : isEdit
+                ? "Simpan Perubahan"
+                : "Tambah Timeline"}
 
             </button>
 
@@ -550,6 +498,8 @@ function Input({
 
   onChange,
 
+  placeholder = "",
+
   type = "text",
 
 }) {
@@ -558,7 +508,7 @@ function Input({
 
     <div>
 
-      <label className="font-semibold">
+      <label className="text-sm font-semibold text-gray-700">
 
         {label}
 
@@ -568,25 +518,15 @@ function Input({
 
         type={type}
 
-        value={
+        value={value ?? ""}
 
-          value === null ||
+        placeholder={placeholder}
 
-          value === undefined
-
-            ? ""
-
-            : value
-
-        }
-
-        onChange={(e)=>
-
+        onChange={(e) =>
           onChange(e.target.value)
-
         }
 
-        className="mt-2 w-full rounded-2xl border border-gray-300 p-4 outline-none transition focus:border-red-600"
+        className="mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 outline-none transition focus:border-red-600 focus:ring-2 focus:ring-red-100"
 
       />
 
@@ -595,4 +535,5 @@ function Input({
   );
 
 }
+
 export default TimelineModal;

@@ -10,6 +10,7 @@ import GraduationLogin from "./pages/GraduationLogin";
 import GraduationResult from "./pages/GraduationResult";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import VerifyParticipant from "./pages/VerifyParticipant";
 
 function App() {
   return (
@@ -58,6 +59,11 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+    path="/verify/:registration_number"
+    element={<VerifyParticipant />}
+/>
 
     </Routes>
   );

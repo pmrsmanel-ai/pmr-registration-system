@@ -1,100 +1,110 @@
-import { useState } from "react";
+import { useRef } from "react";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import { saveAs } from "file-saver";
 
-import {
-  Download,
-  Loader2,
-} from "lucide-react";
+import ParticipantCard from "./ParticipantCard";
 
-import { downloadAnnouncement } from "../../utils/downloadAnnouncement";
+function DownloadButton({ applicant }) {
 
-function DownloadButton() {
+  const cardRef = useRef(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const handleDownload = async () => {
 
-  async function handleDownload() {
+    if (!cardRef.current) return;
 
     try {
 
-      setLoading(true);
+        const node = cardRef.current;
 
-      await downloadAnnouncement();
+        const dataUrl = await toPng(node, {
+
+            cacheBust: true,
+
+            pixelRatio: 2,
+
+            canvasWidth: 1080,
+
+            canvasHeight: 1350,
+
+            width: 1080,
+
+            height: 1350,
+
+            backgroundColor: "#ffffff",
+
+            skipFonts: false,
+
+            style: {
+                margin: "0",
+                transform: "none",
+                transformOrigin: "top left",
+            }
+
+        });
+
+        saveAs(
+            dataUrl,
+            `${applicant.registration_number}.png`
+        );
+
+    } catch (err) {
+
+        console.error(err);
 
     }
 
-    finally {
-
-      setLoading(false);
-
-    }
-
-  }
+};
 
   return (
 
-    <button
+    <>
 
-      onClick={handleDownload}
+      {/* Area tersembunyi untuk proses export */}
 
-      disabled={loading}
+      <div
+style={{
+    position: "fixed",
+    left: "-10000px",
+    top: "0",
+    width: "1080px",
+    height: "1350px",
+    overflow: "hidden",
+    pointerEvents: "none",
+    opacity: 1,
+}}
+>
 
-      className="
-        flex
-        items-center
-        justify-center
-        gap-3
-        rounded-2xl
-        bg-red-700
-        px-8
-        py-4
-        font-bold
-        text-white
-        shadow-lg
-        transition
-        hover:bg-red-800
-        disabled:cursor-not-allowed
-        disabled:opacity-70
-      "
+        <div
+    ref={cardRef}
+    style={{
+        width: "1080px",
+        height: "1350px",
+        overflow: "hidden",
+        background: "#fff",
+    }}
+>
 
-    >
+          <ParticipantCard applicant={applicant} />
 
-      {
+        </div>
 
-        loading
+      </div>
 
-        ? (
+      {/* Tombol */}
 
-          <>
+      <button
+        onClick={handleDownload}
+        className="inline-flex items-center gap-3 rounded-2xl bg-red-700 px-8 py-4 font-semibold text-white transition hover:bg-red-800"
+      >
 
-            <Loader2
+        <Download size={20} />
 
-              size={20}
+        Download Kartu Peserta
 
-              className="animate-spin"
+      </button>
 
-            />
-
-            Membuat Gambar...
-
-          </>
-
-        )
-
-        : (
-
-          <>
-
-            <Download size={20} />
-
-            Simpan sebagai Gambar
-
-          </>
-
-        )
-
-      }
-
-    </button>
+    </>
 
   );
 

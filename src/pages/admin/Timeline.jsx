@@ -69,72 +69,58 @@ function Timeline() {
 
   }
 
-  return(
+  return (
 
-    <Layout>
+  <Layout>
 
-      <div className="mx-auto max-w-7xl p-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
-        <div className="mb-10">
+      <div className="mb-8">
 
-          <h1 className="text-4xl font-black">
+        <h1 className="text-3xl font-black sm:text-4xl">
 
-            Timeline CMS
+          Timeline CMS
 
-          </h1>
+        </h1>
 
-          <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 sm:text-base">
 
-            Kelola seluruh timeline pendaftaran PMR.
+          Kelola seluruh timeline pendaftaran PMR.
+
+        </p>
+
+      </div>
+
+      <div className="rounded-3xl bg-white p-4 shadow-lg sm:p-6">
+
+        <div className="mb-6">
+
+          <h2 className="text-xl font-bold sm:text-2xl">
+
+            Data Timeline
+
+          </h2>
+
+          <p className="mt-2 text-sm text-gray-500 sm:text-base">
+
+            Tambah, ubah, hapus, dan atur urutan timeline pendaftaran.
 
           </p>
 
         </div>
 
         <TimelineTable
-
           timeline={timeline}
-
           refresh={loadData}
-
         />
-                <div className="mt-8 rounded-3xl bg-white p-8 shadow-lg">
-
-          <div className="mb-6 flex items-center justify-between">
-
-            <div>
-
-              <h2 className="text-2xl font-bold">
-
-                Data Timeline
-
-              </h2>
-
-              <p className="mt-2 text-gray-500">
-
-                Tambah, ubah, hapus, dan atur urutan timeline pendaftaran.
-
-              </p>
-
-            </div>
-
-          </div>
-
-          <TimelineTable
-
-            timeline={timeline}
-
-            refresh={loadData}
-
-          />
-
-        </div>
 
       </div>
 
-    </Layout>
+    </div>
 
-  );
+  </Layout>
+
+);
 
 }
 export default Timeline;
